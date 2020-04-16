@@ -1,6 +1,6 @@
 package com.wallapop.yatzee
 
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class YatzeeTest {
@@ -103,6 +103,4 @@ class YatzeeTest {
                                       Category("four of a kind"))
         assertEquals(20, resultado)
     }
-
-
 }
