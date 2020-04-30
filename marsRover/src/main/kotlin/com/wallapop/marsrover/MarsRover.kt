@@ -1,4 +1,4 @@
-package com.wallapop.yatzee
+package com.wallapop.marsrover
 
 class MarsRover {
 
