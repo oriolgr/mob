@@ -1,40 +1,51 @@
 package com.wallapop.marsrover
 
-class MarsRover {
+import com.wallapop.marsrover.Commands.L
+import com.wallapop.marsrover.Commands.M
+import com.wallapop.marsrover.Commands.R
 
+class MarsRover {
     private var y = 0
     private var x = 0
-
     private var heading = "N"
 
-    fun move(input: String): String {
-        input.chars().forEach { c ->
-            if (c == 'L'.toInt() && heading == "N")
-                heading = "W"
-            else if (c == 'L'.toInt() && heading == "E")
-                heading = "N"
-            else if (c == 'L'.toInt() && heading == "S")
-                heading = "E"
-            else if (c == 'L'.toInt() && heading == "W")
-                heading = "S"
-            else if (c == 'R'.toInt() && heading == "N")
-                heading = "E"
-            else if (c == 'R'.toInt() && heading == "E")
-                heading = "S"
-            else if (c == 'R'.toInt() && heading == "S")
-                heading = "W"
-            else if (c == 'R'.toInt() && heading == "W")
-                heading = "N"
-            else y++
+    // switch statement
+    // duplication
+    // open/close
+    // primitive obsession
+    // single responsibility
+    private fun move(input: List<Commands>): String {
+        input.forEach { c ->
+            executeCommand(c)
         }
         return "$x $y $heading"
     }
 
+    private fun executeCommand(command: Commands) {
+        if (command == L && heading == "N")
+            heading = "W"
+        else if (command == L && heading == "E")
+            heading = "N"
+        else if (command == L && heading == "S")
+            heading = "E"
+        else if (command == L && heading == "W")
+            heading = "S"
+        else if (command == R && heading == "N")
+            heading = "E"
+        else if (command == R && heading == "E")
+            heading = "S"
+        else if (command == R && heading == "S")
+            heading = "W"
+        else if (command == R && heading == "W")
+            heading = "N"
+        else if (command == M)
+            y++
+    }
+
     fun execute(input: String): String {
-        val (map, position, movements) = input.lines()
-        configureMap(map)
+        val (_, position, movements) = input.lines()
         definePosition(position)
-        return move(movements)
+        return move(movements.map {movement -> Commands.valueOf(movement.toString()) })
     }
 
     private fun definePosition(position: String) {
@@ -42,12 +53,11 @@ class MarsRover {
         this.x = x.toInt();
         this.y = y.toInt();
         this.heading = heading;
-
     }
+}
 
-
-    fun configureMap(input: String) {
-
-    }
-
+enum class Commands {
+    L,
+    R,
+    M
 }
