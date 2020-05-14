@@ -1,5 +1,6 @@
 package com.wallapop.marsrover
 
+import com.wallapop.marsrover.CardinalPoints.*
 import com.wallapop.marsrover.Commands.L
 import com.wallapop.marsrover.Commands.M
 import com.wallapop.marsrover.Commands.R
@@ -7,7 +8,8 @@ import com.wallapop.marsrover.Commands.R
 class MarsRover {
     private var y = 0
     private var x = 0
-    private var heading = "N"
+
+    private var heading = N
 
     // switch statement
     // duplication
@@ -22,22 +24,22 @@ class MarsRover {
     }
 
     private fun executeCommand(command: Commands) {
-        if (command == L && heading == "N")
-            heading = "W"
-        else if (command == L && heading == "E")
-            heading = "N"
-        else if (command == L && heading == "S")
-            heading = "E"
-        else if (command == L && heading == "W")
-            heading = "S"
-        else if (command == R && heading == "N")
-            heading = "E"
-        else if (command == R && heading == "E")
-            heading = "S"
-        else if (command == R && heading == "S")
-            heading = "W"
-        else if (command == R && heading == "W")
-            heading = "N"
+        if (command == L && heading == N)
+            heading = W
+        else if (command == L && heading == E)
+            heading = N
+        else if (command == L && heading == S)
+            heading = E
+        else if (command == L && heading == W)
+            heading = S
+        else if (command == R && heading == N)
+            heading = E
+        else if (command == R && heading == E)
+            heading = S
+        else if (command == R && heading == S)
+            heading = W
+        else if (command == R && heading == W)
+            heading = N
         else if (command == M)
             y++
     }
@@ -50,9 +52,9 @@ class MarsRover {
 
     private fun definePosition(position: String) {
         val (x, y, heading) = position.split(' ')
-        this.x = x.toInt();
-        this.y = y.toInt();
-        this.heading = heading;
+        this.x = x.toInt()
+        this.y = y.toInt()
+        this.heading = valueOf(heading)
     }
 }
 
@@ -60,4 +62,11 @@ enum class Commands {
     L,
     R,
     M
+}
+
+enum class CardinalPoints {
+    N,
+    E,
+    S,
+    W
 }
