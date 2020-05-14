@@ -1,6 +1,10 @@
 package com.wallapop.marsrover
 
-import com.wallapop.marsrover.CardinalPoints.*
+import com.wallapop.marsrover.CardinalPoints.E
+import com.wallapop.marsrover.CardinalPoints.N
+import com.wallapop.marsrover.CardinalPoints.S
+import com.wallapop.marsrover.CardinalPoints.W
+import com.wallapop.marsrover.CardinalPoints.valueOf
 import com.wallapop.marsrover.Commands.L
 import com.wallapop.marsrover.Commands.M
 import com.wallapop.marsrover.Commands.R
@@ -8,11 +12,6 @@ import com.wallapop.marsrover.Commands.R
 class MarsRover {
     private var position = Position()
 
-    // switch statement
-    // duplication
-    // open/close
-    // primitive obsession
-    // single responsibility
     private fun move(input: List<Commands>): String {
         input.forEach { c ->
             position.executeCommand(c)
@@ -21,16 +20,26 @@ class MarsRover {
     }
 
     fun execute(input: String): String {
-        val (_, position, movements) = input.lines()
-        definePosition(position)
-        return move(movements.map {movement -> Commands.valueOf(movement.toString()) })
-    }
-
-    private fun definePosition(inputPosition: String) {
-        val (x, y, heading) = inputPosition.split(' ')
-        this.position = Position(x.toInt(), y.toInt(), valueOf(heading))
+        val parser = Parser()
+        parser.parse(input)
+        this.position = parser.inputPosition
+        return move(parser.movementsList)
     }
 }
+
+class Parser {
+
+    lateinit var inputPosition: Position
+    lateinit var movementsList: List<Commands>
+
+    fun parse(input: String) {
+        val (_, position, movements) = input.lines()
+        val (x, y, heading) = position.split(' ')
+        movementsList = movements.map { movement -> Commands.valueOf(movement.toString()) }
+        inputPosition = Position(x.toInt(), y.toInt(), valueOf(heading))
+    }
+}
+
 
 enum class Commands {
     L,
