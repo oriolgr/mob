@@ -6,10 +6,7 @@ import com.wallapop.marsrover.Commands.M
 import com.wallapop.marsrover.Commands.R
 
 class MarsRover {
-    private var y = 0
-    private var x = 0
-
-    private var heading = N
+    private var position = Position()
 
     // switch statement
     // duplication
@@ -18,12 +15,43 @@ class MarsRover {
     // single responsibility
     private fun move(input: List<Commands>): String {
         input.forEach { c ->
-            executeCommand(c)
+            position.executeCommand(c)
         }
-        return "$x $y $heading"
+        return "$position"
     }
 
-    private fun executeCommand(command: Commands) {
+    fun execute(input: String): String {
+        val (_, position, movements) = input.lines()
+        definePosition(position)
+        return move(movements.map {movement -> Commands.valueOf(movement.toString()) })
+    }
+
+    private fun definePosition(inputPosition: String) {
+        val (x, y, heading) = inputPosition.split(' ')
+        this.position = Position(x.toInt(), y.toInt(), valueOf(heading))
+    }
+}
+
+enum class Commands {
+    L,
+    R,
+    M
+}
+
+enum class CardinalPoints {
+    N,
+    E,
+    S,
+    W
+}
+
+data class Position(var x: Int = 0,
+                    var y: Int = 0,
+                    var heading: CardinalPoints = N) {
+
+    override fun toString() = "$x $y $heading"
+
+    fun executeCommand(command: Commands) {
         if (command == L && heading == N)
             heading = W
         else if (command == L && heading == E)
@@ -43,30 +71,4 @@ class MarsRover {
         else if (command == M)
             y++
     }
-
-    fun execute(input: String): String {
-        val (_, position, movements) = input.lines()
-        definePosition(position)
-        return move(movements.map {movement -> Commands.valueOf(movement.toString()) })
-    }
-
-    private fun definePosition(position: String) {
-        val (x, y, heading) = position.split(' ')
-        this.x = x.toInt()
-        this.y = y.toInt()
-        this.heading = valueOf(heading)
-    }
-}
-
-enum class Commands {
-    L,
-    R,
-    M
-}
-
-enum class CardinalPoints {
-    N,
-    E,
-    S,
-    W
 }
