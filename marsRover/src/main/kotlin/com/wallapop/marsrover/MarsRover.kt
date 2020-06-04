@@ -154,7 +154,19 @@ data class Position(var x: Int = 0,
     fun executeCommand(command: Commands) {
         if (command != M)
             heading = heading.turn(command)
-        else
-            y++
+        else {
+            if (heading is HeadingNorth) {
+                y++
+            }
+            if (heading is HeadingEast) {
+                x++
+            }
+            if (heading is HeadingSouth) {
+                y--
+            }
+            if (heading is HeadingWest) {
+                x--
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import junit.framework.Assert.assertEquals
 import org.junit.Test
 
 class MarsRoverTest {
+
     @Test
     fun `Void input does not make rover move`() {
         val input = "5 5\n" +
@@ -19,6 +20,14 @@ class MarsRoverTest {
         val rover = MarsRover()
         val result = rover.execute(input)
         assertEquals(result, "0 1 N")
+    }
+
+    @Test
+    fun `move command makes rover goes east`() {
+        val input = "5 5\n0 0 E\nM"
+        val rover = MarsRover()
+        val result = rover.execute(input)
+        assertEquals("1 0 E", result)
     }
 
     @Test
@@ -103,5 +112,15 @@ class MarsRoverTest {
         assertEquals(result, "0 5 N")
     }
 
+    @Test
+    fun `new test`() {
+
+        val input = "5 5\n1 2 N\nLMLMLMLMM"
+
+        val rover = MarsRover()
+        val result = rover.execute(input)
+
+        assertEquals("1 3 N", result)
+    }
 
 }
