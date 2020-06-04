@@ -7,3 +7,4 @@
 *.ipr
 /out/
 log
+/marsRover/src/target/
