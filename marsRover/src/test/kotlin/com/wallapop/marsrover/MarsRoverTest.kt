@@ -27,7 +27,7 @@ class MarsRoverTest {
                 "0 0 N\nL"
         val rover = MarsRover()
         val result = rover.execute(input)
-        assertEquals(result, "0 0 W")
+        assertEquals("0 0 W", result)
     }
 
     @Test

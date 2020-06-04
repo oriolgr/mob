@@ -36,10 +36,21 @@ class Parser {
         val (_, position, movements) = input.lines()
         val (x, y, heading) = position.split(' ')
         movementsList = movements.map { movement -> Commands.valueOf(movement.toString()) }
-        inputPosition = Position(x.toInt(), y.toInt(), valueOf(heading))
+        inputPosition = Position(x.toInt(), y.toInt(), HeadingFactory.create(valueOf(heading)))
     }
 }
 
+object HeadingFactory {
+
+    fun create(cardinalPoints: CardinalPoints): Heading =
+            when (cardinalPoints) {
+                N -> HeadingNorth()
+                E -> HeadingEast()
+                S -> HeadingSouth()
+                W -> HeadingWest()
+            }
+
+}
 
 enum class Commands {
     L,
@@ -54,30 +65,93 @@ enum class CardinalPoints {
     W
 }
 
+interface Heading {
+
+    fun turn(command: Commands): Heading
+}
+
+class HeadingNorth : Heading {
+
+    override fun turn(command: Commands): Heading {
+        if (command == L)
+            return HeadingWest()
+
+        if (command == R)
+            return HeadingEast()
+
+        return this
+    }
+
+    override fun toString(): String {
+        return "N"
+    }
+
+}
+
+class HeadingEast : Heading {
+
+    override fun turn(command: Commands): Heading {
+        if (command == L)
+            return HeadingNorth()
+
+        if (command == R)
+            return HeadingSouth()
+
+        return this
+    }
+
+    override fun toString(): String {
+        return "E"
+    }
+
+}
+
+class HeadingSouth : Heading {
+
+    override fun turn(command: Commands): Heading {
+        if (command == L)
+            return HeadingEast()
+
+        if (command == R)
+            return HeadingWest()
+
+        return this
+    }
+
+    override fun toString(): String {
+        return "S"
+    }
+
+}
+
+class HeadingWest : Heading {
+
+    override fun turn(command: Commands): Heading {
+        if (command == L)
+            return HeadingSouth()
+
+        if (command == R)
+            return HeadingNorth()
+
+        return this
+    }
+
+    override fun toString(): String {
+        return "W"
+    }
+
+}
+
 data class Position(var x: Int = 0,
                     var y: Int = 0,
-                    var heading: CardinalPoints = N) {
+                    var heading: Heading = HeadingNorth()) {
 
     override fun toString() = "$x $y $heading"
 
     fun executeCommand(command: Commands) {
-        if (command == L && heading == N)
-            heading = W
-        else if (command == L && heading == E)
-            heading = N
-        else if (command == L && heading == S)
-            heading = E
-        else if (command == L && heading == W)
-            heading = S
-        else if (command == R && heading == N)
-            heading = E
-        else if (command == R && heading == E)
-            heading = S
-        else if (command == R && heading == S)
-            heading = W
-        else if (command == R && heading == W)
-            heading = N
-        else if (command == M)
+        if (command != M)
+            heading = heading.turn(command)
+        else
             y++
     }
 }
