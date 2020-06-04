@@ -65,21 +65,30 @@ enum class CardinalPoints {
     W
 }
 
-interface Heading {
+abstract class Heading {
 
-    fun turn(command: Commands): Heading
-}
-
-class HeadingNorth : Heading {
-
-    override fun turn(command: Commands): Heading {
+    fun turn(command: Commands): Heading {
         if (command == L)
-            return HeadingWest()
+            return turnLeft()
 
         if (command == R)
-            return HeadingEast()
+            return turnRight()
 
         return this
+    }
+
+    abstract fun turnRight(): Heading
+    abstract fun turnLeft(): Heading
+}
+
+class HeadingNorth : Heading() {
+
+    override fun turnLeft(): Heading {
+        return HeadingWest()
+    }
+
+    override fun turnRight(): Heading {
+        return HeadingEast()
     }
 
     override fun toString(): String {
@@ -88,16 +97,14 @@ class HeadingNorth : Heading {
 
 }
 
-class HeadingEast : Heading {
+class HeadingEast : Heading() {
 
-    override fun turn(command: Commands): Heading {
-        if (command == L)
-            return HeadingNorth()
+    override fun turnRight(): Heading {
+        return HeadingSouth()
+    }
 
-        if (command == R)
-            return HeadingSouth()
-
-        return this
+    override fun turnLeft(): Heading {
+        return HeadingNorth()
     }
 
     override fun toString(): String {
@@ -106,16 +113,14 @@ class HeadingEast : Heading {
 
 }
 
-class HeadingSouth : Heading {
+class HeadingSouth : Heading() {
 
-    override fun turn(command: Commands): Heading {
-        if (command == L)
-            return HeadingEast()
+    override fun turnRight(): Heading {
+        return HeadingWest()
+    }
 
-        if (command == R)
-            return HeadingWest()
-
-        return this
+    override fun turnLeft(): Heading {
+        return HeadingEast()
     }
 
     override fun toString(): String {
@@ -124,16 +129,14 @@ class HeadingSouth : Heading {
 
 }
 
-class HeadingWest : Heading {
+class HeadingWest : Heading() {
 
-    override fun turn(command: Commands): Heading {
-        if (command == L)
-            return HeadingSouth()
+    override fun turnRight(): Heading {
+        return HeadingNorth()
+    }
 
-        if (command == R)
-            return HeadingNorth()
-
-        return this
+    override fun turnLeft(): Heading {
+        return HeadingSouth()
     }
 
     override fun toString(): String {
