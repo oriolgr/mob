@@ -12,9 +12,9 @@ import com.wallapop.marsrover.Commands.R
 class MarsRover {
     private var position = Position()
 
-    private fun move(input: List<Commands>): String {
+    private fun move(input: List<Command>): String {
         input.forEach { c ->
-            position.executeCommand(c)
+            c.execute(position)
         }
         return "$position"
     }
@@ -30,14 +30,26 @@ class MarsRover {
 class Parser {
 
     lateinit var inputPosition: Position
-    lateinit var movementsList: List<Commands>
+    lateinit var movementsList: List<Command>
 
     fun parse(input: String) {
         val (_, position, movements) = input.lines()
         val (x, y, heading) = position.split(' ')
-        movementsList = movements.map { movement -> Commands.valueOf(movement.toString()) }
+        movementsList = movements.map { movement -> MovementFactory.create(Commands.valueOf(movement.toString())) }
         inputPosition = Position(x.toInt(), y.toInt(), HeadingFactory.create(valueOf(heading)))
     }
+}
+
+object MovementFactory {
+
+    fun create(command: Commands) : Command {
+        return when (command) {
+            L -> TurnLeft()
+            R -> TurnRight()
+            M -> Move()
+        }
+    }
+
 }
 
 object HeadingFactory {
@@ -56,6 +68,34 @@ enum class Commands {
     L,
     R,
     M
+}
+
+interface Command {
+    fun execute(position: Position)
+}
+
+class TurnLeft : Command {
+
+    override fun execute(position: Position) {
+        position.turn(L)
+    }
+
+}
+
+class TurnRight : Command {
+
+    override fun execute(position: Position) {
+        position.turn(R)
+    }
+
+}
+
+class Move : Command {
+
+    override fun execute(position: Position) {
+        position.move()
+    }
+
 }
 
 enum class CardinalPoints {
@@ -151,22 +191,22 @@ data class Position(var x: Int = 0,
 
     override fun toString() = "$x $y $heading"
 
-    fun executeCommand(command: Commands) {
-        if (command != M)
-            heading = heading.turn(command)
-        else {
-            if (heading is HeadingNorth) {
-                y++
-            }
-            if (heading is HeadingEast) {
-                x++
-            }
-            if (heading is HeadingSouth) {
-                y--
-            }
-            if (heading is HeadingWest) {
-                x--
-            }
+    fun turn(command: Commands) {
+        heading = heading.turn(command)
+    }
+
+    fun move() {
+        if (heading is HeadingNorth) {
+            y++
+        }
+        if (heading is HeadingEast) {
+            x++
+        }
+        if (heading is HeadingSouth) {
+            y--
+        }
+        if (heading is HeadingWest) {
+            x--
         }
     }
 }
