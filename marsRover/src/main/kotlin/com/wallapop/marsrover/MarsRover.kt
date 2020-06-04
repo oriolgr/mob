@@ -36,13 +36,13 @@ class Parser {
         val (_, position, movements) = input.lines()
         val (x, y, heading) = position.split(' ')
         movementsList = movements.map { movement -> MovementFactory.create(Commands.valueOf(movement.toString())) }
-        inputPosition = Position(x.toInt(), y.toInt(), HeadingFactory.create(valueOf(heading)))
+        inputPosition = Position(Coordinate(x.toInt(), y.toInt()), HeadingFactory.create(valueOf(heading)))
     }
 }
 
 object MovementFactory {
 
-    fun create(command: Commands) : Command {
+    fun create(command: Commands): Command {
         return when (command) {
             L -> TurnLeft()
             R -> TurnRight()
@@ -185,17 +185,24 @@ class HeadingWest : Heading() {
 
 }
 
-data class Position(var x: Int = 0,
-                    var y: Int = 0,
+data class Position(var coordinate: Coordinate = Coordinate(0, 0),
                     var heading: Heading = HeadingNorth()) {
 
-    override fun toString() = "$x $y $heading"
+    override fun toString() = "$coordinate $heading"
 
     fun turn(command: Commands) {
         heading = heading.turn(command)
     }
 
     fun move() {
+        coordinate.move(heading)
+    }
+
+}
+
+data class Coordinate(var x: Int, var y: Int) {
+
+    fun move(heading: Heading) {
         if (heading is HeadingNorth) {
             y++
         }
@@ -208,5 +215,9 @@ data class Position(var x: Int = 0,
         if (heading is HeadingWest) {
             x--
         }
+    }
+
+    override fun toString(): String {
+        return "$x $y"
     }
 }
